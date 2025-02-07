@@ -1,2 +1,5 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+
+<div class="flex flex-col items-center mt-8">
+  <h1 class="text-4xl font-bold my-4">Github Profile Generator</h1>
+</div>
+
