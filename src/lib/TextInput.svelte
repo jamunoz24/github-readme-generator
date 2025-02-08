@@ -19,7 +19,7 @@
 	<!-- Send Button -->
 	<button
 		on:click={sendMessage}
-		class="w-120 h-10 px-4 py-2 text-white bg-sky-400 rounded-lg hover:bg-sky-600 focus:outline-none"
+		class="w-120 h-10 px-4 py-2 text-white bg-sky-600 rounded-lg hover:bg-sky-700 focus:outline-none"
 	>
 		Send
 	</button>
