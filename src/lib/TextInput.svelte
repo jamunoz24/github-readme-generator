@@ -54,7 +54,7 @@
 		on:click={sendMessage}
 		class="w-120 h-10 px-4 py-2 text-white bg-sky-600 rounded-lg hover:bg-sky-700 focus:outline-none"
 	>
-		Send
+		Fetch Profile
 	</button>
 
 	<!-- Loading Indicator -->
