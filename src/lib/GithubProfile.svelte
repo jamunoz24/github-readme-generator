@@ -14,9 +14,12 @@
 		}))
 	);
 
+	// Store for additional profile description
+	let additionalProfileDescription = "";
+
 	function generateReadme() {
 		repoSettings.subscribe((repos) => {
-			const readmeContent = `# ${githubUser.name}\n\n${githubUser.bio || ""}\n\n## Pinned Repositories\n` + 
+			const readmeContent = `# ${githubUser.name}\n\n${githubUser.bio || ""}\n\n${additionalProfileDescription ? `**Additional Profile Notes:**\n${additionalProfileDescription}\n\n` : ""}## Pinned Repositories\n` + 
 				repos.map(repo =>
 					`### [${repo.name}](${repo.url})\n${repo.description || ""}\n${repo.enableReadme && repo.readme ? `\n**README Content:**\n${repo.readme}` : ""}\n${repo.additionalDescription ? `\n**Additional Notes:**\n${repo.additionalDescription}` : ""}`
 				).join("\n\n");
@@ -77,6 +80,14 @@
 			></textarea>
 		</div>
 	{/each}
+
+	<!-- Additional Profile Description Textarea -->
+	<h4 class="text-lg font-bold mt-4">Additional Profile Description:</h4>
+	<textarea
+		bind:value={additionalProfileDescription}
+		placeholder="Add more details about yourself..."
+		class="w-full p-2 mt-2 resize-none bg-gray-700 text-white border rounded focus:ring-blue-500"
+	></textarea>
 
 	<!-- Generate Profile README Button -->
 	<button
