@@ -1,9 +1,10 @@
 <script lang="ts">
 	import type { GithubUser } from "./types/github";
+	import GithubProfile from "./GithubProfile.svelte";
 
 	let username = "";
-	let loading = false;
 	let error = "";
+	let loading = false;
 	let githubUser: GithubUser | null = null;
 
 	async function sendMessage() {
@@ -30,7 +31,7 @@
 
 	function handleKeydown(event: any) {
 		if (event.key === "Enter") {
-			event.preventDefault(); // Prevent form submission
+			event.preventDefault(); // Prevent form submission (page reload)
 			sendMessage();
 		}
 	}
@@ -64,23 +65,9 @@
 		<p class="text-red-500">{error}</p>
 	{/if}
 
-	<!-- Display GitHub Data -->
+	<!-- Display GitHub Data in GithubProfile Component -->
 	{#if githubUser}
-		<div class="w-120 p-4 border rounded-lg bg-gray-800">
-			<img src="{githubUser.avatarUrl}" alt="Avatar" class="w-16 h-16 rounded-full mb-2">
-			<h3 class="text-lg font-bold">{githubUser.name}</h3>
-			<p>{githubUser.bio}</p>
-			<a href="{githubUser.websiteUrl}" class="text-blue-600" target="_blank">Website</a>
-			
-			<!-- Display Pinned Repositories -->
-			<h4 class="text-lg font-bold mt-4">Pinned Repositories:</h4>
-			{#each githubUser.pinnedRepositories as repo}
-				<div class="p-2 border rounded-lg bg-gray-700 mt-2">
-					<h5 class="text-md font-bold">{repo.name}</h5>
-					<p>{repo.description}</p>
-					<a href="{repo.url}" class="text-blue-600" target="_blank">Repository Link</a>
-				</div>
-			{/each}
-		</div>
+		<GithubProfile {githubUser} />
 	{/if}
+
 </div>
