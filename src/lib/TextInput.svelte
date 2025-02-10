@@ -1,11 +1,10 @@
-<script>
+<script lang="ts">
+	import type { GithubUser } from "./types/github";
+
 	let username = "";
-	/**
-	 * @type {{ data: { user: { avatarUrl: any; name: any; bio: any; websiteUrl: any; pinnedItems: { nodes: { name: any; description: any; url: any; }[]; }; }; }; } | null}
-	 */
-	let userData = null;
 	let loading = false;
 	let error = "";
+	let githubUser: GithubUser | null = null;
 
 	async function sendMessage() {
 		if (!username.trim()) return; // Prevent empty messages
@@ -20,7 +19,8 @@
 				throw new Error("Failed to fetch user data");
 			}
 
-			userData = await response.json();
+			githubUser = await response.json();
+			console.log(githubUser);
 		} catch (err) {
 			error = err instanceof Error ? err.message : "An unknown error occurred";
 		} finally {
@@ -28,12 +28,9 @@
 		}
 	}
 
-	/**
-	 * @param {{ key: string; preventDefault: () => void; }} event
-	 */
-	function handleKeydown(event) {
+	function handleKeydown(event: any) {
 		if (event.key === "Enter") {
-			event.preventDefault(); // Prevent form submission (if inside a form)
+			event.preventDefault(); // Prevent form submission
 			sendMessage();
 		}
 	}
@@ -68,16 +65,16 @@
 	{/if}
 
 	<!-- Display GitHub Data -->
-	{#if userData}
+	{#if githubUser}
 		<div class="w-120 p-4 border rounded-lg bg-gray-800">
-			<img src="{userData.data.user.avatarUrl}" alt="Avatar" class="w-16 h-16 rounded-full mb-2">
-			<h3 class="text-lg font-bold">{userData.data.user.name}</h3>
-			<p>{userData.data.user.bio}</p>
-			<a href="{userData.data.user.websiteUrl}" class="text-blue-600" target="_blank">Website</a>
+			<img src="{githubUser.avatarUrl}" alt="Avatar" class="w-16 h-16 rounded-full mb-2">
+			<h3 class="text-lg font-bold">{githubUser.name}</h3>
+			<p>{githubUser.bio}</p>
+			<a href="{githubUser.websiteUrl}" class="text-blue-600" target="_blank">Website</a>
 			
 			<!-- Display Pinned Repositories -->
 			<h4 class="text-lg font-bold mt-4">Pinned Repositories:</h4>
-			{#each userData.data.user.pinnedItems.nodes as repo}
+			{#each githubUser.pinnedRepositories as repo}
 				<div class="p-2 border rounded-lg bg-gray-700 mt-2">
 					<h5 class="text-md font-bold">{repo.name}</h5>
 					<p>{repo.description}</p>

@@ -1,3 +1,5 @@
+import type { GithubUser } from '$lib/types/github.js';
+
 const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_ACCESS_TOKEN;
 
 export async function GET({ url }) {
@@ -20,6 +22,14 @@ export async function GET({ url }) {
                   name
                   description
                   url
+                  defaultBranchRef {
+                    name
+                  }
+                  object(expression: "main:README.md") {
+                    ... on Blob {
+                      text
+                    }
+                  }
                 }
               }
             }
@@ -44,5 +54,20 @@ export async function GET({ url }) {
     }
 
     const data = await response.json();
-    return new Response(JSON.stringify(data), { status: 200 });
+    
+    // Map data to 
+    const user: GithubUser = {
+      name: data.data.user.name,
+      websiteUrl: data.data.user.websiteUrl,
+      bio: data.data.user.bio,
+      avatarUrl: data.data.user.avatarUrl,
+      pinnedRepositories: data.data.user.pinnedItems.nodes.map((node: any) => ({
+        name: node.name,
+        description: node.description,
+        url: node.url,
+        readme: node.object?.text || null
+      }))
+    }
+
+    return new Response(JSON.stringify(user), { status: 200 });
 }
