@@ -4,6 +4,9 @@
 
 	// Props passed from parent (TextInput.svelte)
 	export let githubUser: GithubUser;
+  let loading = false;
+  let error = "";
+  let gptResponse = "";
 
 	// Store for managing README enable state and additional descriptions per repo
 	let repoSettings = writable(
@@ -31,6 +34,32 @@
 	function generateRepoReadme(repoName: string, readme: string | null, additionalDescription: string) {
 		const repoReadmeContent = `# ${repoName}\n\n${readme || ""}\n\n${additionalDescription ? `**Additional Notes:**\n${additionalDescription}` : ""}`;
 		console.log(`Generated README for ${repoName}:\n`, repoReadmeContent);
+	}
+
+  async function gptGenerate() {
+		loading = true;
+		error = "";
+		gptResponse = "";
+
+		try {
+			const response = await fetch("/openai", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ githubUser })
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to get OpenAI response");
+			}
+
+			const data = await response.json();
+			gptResponse = data.aiResponse;
+			console.log(gptResponse);
+		} catch (err) {
+			error = err instanceof Error ? err.message : "An unknown error occurred";
+		} finally {
+			loading = false;
+		}
 	}
 </script>
 
@@ -91,9 +120,24 @@
 
 	<!-- Generate Profile README Button -->
 	<button
-		on:click={generateReadme}
+		on:click={gptGenerate}
 		class="w-full mt-4 px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none"
 	>
 		Generate Profile README
 	</button>
+
+  {#if loading}
+		<p class="text-gray-500 mt-2">AI is analyzing the GitHub profile...</p>
+	{/if}
+
+	{#if error}
+		<p class="text-red-500">{error}</p>
+	{/if}
+
+	{#if gptResponse}
+		<div class="mt-4 p-2 border rounded-lg bg-gray-700">
+			<h4 class="text-md font-bold">README:</h4>
+			<p class="text-sm whitespace-pre-wrap">{gptResponse}</p>
+		</div>
+	{/if}
 </div>
