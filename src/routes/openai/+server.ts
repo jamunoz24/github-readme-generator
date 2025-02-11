@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 model: "gpt-4o",
                 messages: [
                     { role: "system", content: "You are a helpful AI that analyzes GitHub profiles." },
-                    { role: "user", content: `Analyze the following GitHub profile and repositories. From this, generate a readme in markdown format that the user can use for their profile. The profile readme should stand out and highlight the strength of the user's profile. This readme should look appealing to tech recruiters.\n\n${JSON.stringify(formattedPrompt, null, 2)}` }
+                    { role: "user", content: `Analyze the following GitHub profile and repositories. From this, generate a readme in markdown format that the user can use for their profile. Do not wrap anything in a code block. Do not make any mentions of missing fields. The profile readme should stand out and highlight the strength of the user's profile. This readme should look appealing to tech recruiters.\n\n${JSON.stringify(formattedPrompt, null, 2)}` }
                 ],
                 temperature: 0.7
             })

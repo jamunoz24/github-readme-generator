@@ -1,12 +1,15 @@
 <script lang="ts">
+	import '$lib/styles/markdown.css';
 	import type { GithubUser, PinnedRepository } from "$lib/types/github";
+	import { marked } from "marked";
+	import { tick } from 'svelte';
 	import { writable } from "svelte/store";
 
-	// Props passed from parent (TextInput.svelte)
 	export let githubUser: GithubUser;
-  let loading = false;
-  let error = "";
-  let gptResponse = "";
+	let loading = false;
+	let error = "";
+	let gptResponse = "";
+	let markdownContainer: HTMLElement | null = null;
 
 	// Store for managing README enable state and additional descriptions per repo
 	let repoSettings = writable(
@@ -36,7 +39,7 @@
 		console.log(`Generated README for ${repoName}:\n`, repoReadmeContent);
 	}
 
-  async function gptGenerate() {
+	async function gptGenerate() {
 		loading = true;
 		error = "";
 		gptResponse = "";
@@ -54,7 +57,15 @@
 
 			const data = await response.json();
 			gptResponse = data.aiResponse;
+
 			console.log(gptResponse);
+			await tick();
+
+			// Render Markdown into HTML
+			if (markdownContainer) {
+				markdownContainer.innerHTML = await marked.parse(gptResponse);
+			}
+
 		} catch (err) {
 			error = err instanceof Error ? err.message : "An unknown error occurred";
 		} finally {
@@ -135,9 +146,10 @@
 	{/if}
 
 	{#if gptResponse}
-		<div class="mt-4 p-2 border rounded-lg bg-gray-700">
+		<div class="mt-4 p-2 border rounded-lg bg-gray-700 markdown-body">
 			<h4 class="text-md font-bold">README:</h4>
-			<p class="text-sm whitespace-pre-wrap">{gptResponse}</p>
+			<!-- Render response as Markdown using an HTML element -->
+			<div bind:this={markdownContainer}></div>
 		</div>
 	{/if}
 </div>
