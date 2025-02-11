@@ -72,6 +72,22 @@
 			loading = false;
 		}
 	}
+
+	function downloadMarkdown() {
+		if (!gptResponse) return;
+
+		const blob = new Blob([gptResponse], { type: "text/markdown" });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement("a");
+
+		a.href = url;
+		a.download = "README.md"; // Filename
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	}
+
 </script>
 
 <div class="w-120 p-4 border rounded-lg bg-gray-800 text-white">
@@ -150,6 +166,13 @@
 			<h4 class="text-md font-bold">README:</h4>
 			<!-- Render response as Markdown using an HTML element -->
 			<div bind:this={markdownContainer}></div>
+			<!-- Download Markdown Button -->
+			<button
+				on:click={downloadMarkdown}
+				class="w-full mt-4 px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none"
+			>
+				Download as .md
+			</button>
 		</div>
 	{/if}
 </div>
