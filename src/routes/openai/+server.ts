@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
             return new Response(JSON.stringify({ error: data.error.message || "Failed to fetch OpenAI response" }), { status: response.status });
         }
 
-        return new Response(JSON.stringify({ aiResponse: data.choices[0].message.content }), { status: 200 });
+        return new Response(JSON.stringify({ gptResponse: data.choices[0].message.content }), { status: 200 });
 
     } catch (error) {
         console.error("Error:", error);

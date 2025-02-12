@@ -56,9 +56,8 @@
 			}
 
 			const data = await response.json();
-			gptResponse = data.aiResponse;
+			gptResponse = data.gptResponse;
 
-			console.log(gptResponse);
 			await tick();
 
 			// Render Markdown into HTML
@@ -95,7 +94,7 @@
 	<h3 class="text-lg font-bold">{githubUser.name}</h3>
 	<p>{githubUser.bio}</p>
   {#if githubUser.websiteUrl}
-	  <a href="{githubUser.websiteUrl}" class="text-blue-400" target="_blank">Website</a>
+	  <a href="{githubUser.websiteUrl}" class="text-blue-400" target="_blank">My Website</a>
   {/if}
 
 	<!-- Display Pinned Repositories -->

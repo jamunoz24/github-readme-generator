@@ -9,6 +9,7 @@
 
 	async function sendMessage() {
 		if (!username.trim()) return; // Prevent empty messages
+		githubUser = null; // Reset the profile
 
 		loading = true;
 		error = "";
@@ -37,7 +38,7 @@
 	}
 </script>
 
-<div class="flex flex-col items-center space-y-4 w-120">
+<div class="flex flex-col items-center space-y-4 w-120 mb-6">
 	<!-- Username Textbox -->
   <h2 class="text-lg font-bold self-start m-1">Github Username:</h2>
 	<input
