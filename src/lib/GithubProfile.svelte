@@ -3,16 +3,12 @@
 	import type { GithubUser, PinnedRepository } from "$lib/types/github";
 	import { marked } from "marked";
 	import { tick } from 'svelte';
-	import { writable } from "svelte/store";
 
 	export let githubUser: GithubUser;
 	let loading = false;
 	let error = "";
 	let gptResponse = "";
 	let markdownContainer: HTMLElement | null = null;
-
-	// Store for additional profile description
-	let additionalProfileDescription = "";
 
 	async function gptGenerateRepo(repo: PinnedRepository) {
 		loading = true;
@@ -147,7 +143,7 @@
 	<!-- Additional Profile Description Textarea -->
 	<h4 class="text-lg font-bold mt-4">Additional Profile Description:</h4>
 	<textarea
-		bind:value={additionalProfileDescription}
+		bind:value={githubUser.additionalDesc}
 		placeholder="Add more details about yourself..."
 		class="w-full p-2 mt-2 resize-none bg-gray-700 text-white border rounded focus:ring-blue-500"
 	></textarea>

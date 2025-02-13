@@ -5,7 +5,7 @@ const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 export const POST: RequestHandler = async ({ request }) => {
     try {
         const { type, githubUser, repo }:
-            {type: String, githubUser: GithubUser, repo: PinnedRepository } = await request.json();
+            {type: string, githubUser: GithubUser, repo: PinnedRepository } = await request.json();
 
         if (type === "profile") {
             if (!githubUser) {
@@ -22,8 +22,9 @@ export const POST: RequestHandler = async ({ request }) => {
                         name: repo.name,
                         description: repo.description || "No description",
                         url: repo.url,
-                        readme: repo.readme || "No README content",
-                    }))
+                        readme: (repo.enableReadme && repo.readme) ? repo.readme : "No README content",
+                    })),
+                    additonalDescription: githubUser.additionalDesc || ""
                 }
             };
 
@@ -36,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 body: JSON.stringify({
                     model: "gpt-4o",
                     messages: [
-                        { role: "system", content: "You are a helpful AI that analyzes GitHub profiles." },
+                        { role: "system", content: "You are a helpful AI that analyzes and generates README files for GitHub profiles." },
                         { role: "user", content: `Analyze the following GitHub profile and repositories. From this, generate a readme in markdown format that the user can use for their profile. Do not wrap anything in a code block. Do not make any mentions of missing fields. The profile readme should stand out and highlight the strength of the user's profile. This readme should look appealing to tech recruiters.\n\n${JSON.stringify(formattedPrompt, null, 2)}` }
                     ],
                     temperature: 0.7
@@ -57,7 +58,14 @@ export const POST: RequestHandler = async ({ request }) => {
                 return new Response(JSON.stringify({ error: "Repository name and description are required" }), { status: 400 });
             }
 
-            const repoPrompt = `Generate a README file for the following GitHub repository:\n\nRepository: ${repo.name}\nDescription: ${repo.description}\n`;
+            const formattedPrompt = {
+                repo: {
+                    name: repo.name,
+                    description: repo.description || "No Description",
+                    readme: (repo.readme && repo.enableReadme) ? repo.readme : "No README contenth",
+                    additionalDescription: repo.additionalDesc || ""
+                }
+            }
 
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
                 method: "POST",
@@ -69,7 +77,7 @@ export const POST: RequestHandler = async ({ request }) => {
                     model: "gpt-4o",
                     messages: [
                         { role: "system", content: "You are an AI that generates well-structured GitHub README files for repositories." },
-                        { role: "user", content: repoPrompt }
+                        { role: "user", content: `Generate a README file for the following GitHub repository:\n\n${JSON.stringify(formattedPrompt, null, 2)}` }
                     ],
                     temperature: 0.7
                 })

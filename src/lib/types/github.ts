@@ -4,6 +4,7 @@ export type GithubUser = {
   bio: string | null;
   avatarUrl: string | null;
   pinnedRepositories: PinnedRepository[];
+  additionalDesc: string | null;
 };
 
 export type PinnedRepository = {
