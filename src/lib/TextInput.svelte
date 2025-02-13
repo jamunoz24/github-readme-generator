@@ -58,7 +58,6 @@
 
 	<!-- Loading Indicator -->
 	{#if loading}
-		<!-- <p class="text-gray-500">Loading...</p> -->
 		<div class="loading-spinner"></div>
 	{/if}
 
