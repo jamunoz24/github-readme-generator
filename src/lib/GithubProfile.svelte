@@ -153,7 +153,10 @@
 	</button>
 
   {#if loading}
-		<p class="text-gray-500 mt-2">AI is analyzing the GitHub profile...</p>
+		<!-- <p class="text-gray-500 mt-2">AI is analyzing the GitHub profile...</p> -->
+		<div class="flex flex-col items-center mt-4">
+			<div class="loading-spinner"></div>
+		</div>
 	{/if}
 
 	{#if error}
