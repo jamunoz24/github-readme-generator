@@ -11,35 +11,10 @@
 	let gptResponse = "";
 	let markdownContainer: HTMLElement | null = null;
 
-	// Store for managing README enable state and additional descriptions per repo
-	let repoSettings = writable(
-		githubUser.pinnedRepositories.map((repo) => ({
-			...repo,
-			enableReadme: false,
-			additionalDescription: ""
-		}))
-	);
-
 	// Store for additional profile description
 	let additionalProfileDescription = "";
 
-	function generateReadme() {
-		repoSettings.subscribe((repos) => {
-			const readmeContent = `# ${githubUser.name}\n\n${githubUser.bio || ""}\n\n${additionalProfileDescription ? `**Additional Profile Notes:**\n${additionalProfileDescription}\n\n` : ""}## Pinned Repositories\n` + 
-				repos.map(repo =>
-					`### [${repo.name}](${repo.url})\n${repo.description || ""}\n${repo.enableReadme && repo.readme ? `\n**README Content:**\n${repo.readme}` : ""}\n${repo.additionalDescription ? `\n**Additional Notes:**\n${repo.additionalDescription}` : ""}`
-				).join("\n\n");
-
-			console.log("Generated README:\n", readmeContent);
-		});
-	}
-
-	function generateRepoReadme(repoName: string, readme: string | null, additionalDescription: string) {
-		const repoReadmeContent = `# ${repoName}\n\n${readme || ""}\n\n${additionalDescription ? `**Additional Notes:**\n${additionalDescription}` : ""}`;
-		console.log(`Generated README for ${repoName}:\n`, repoReadmeContent);
-	}
-
-	async function gptGenerate() {
+	async function gptGenerateRepo(repo: PinnedRepository) {
 		loading = true;
 		error = "";
 		gptResponse = "";
@@ -48,11 +23,44 @@
 			const response = await fetch("/openai", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ githubUser })
+				body: JSON.stringify({ type: "repo", repo})
 			});
 
 			if (!response.ok) {
-				throw new Error("Failed to get OpenAI response");
+				throw new Error("Failed to get GPT reponse.")
+			}
+		
+			const data = await response.json();
+			gptResponse = data.gptResponse;
+
+			await tick();
+
+			// Markdown to HTML
+			if (markdownContainer) {
+				markdownContainer.innerHTML = await marked.parse(gptResponse);
+			}
+
+		} catch (err) {
+			error = err instanceof Error ? err.message : "An unknown error has occured."
+		} finally {
+			loading = false;
+		}
+	}
+
+	async function gptGenerateProfile() {
+		loading = true;
+		error = "";
+		gptResponse = "";
+
+		try {
+			const response = await fetch("/openai", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ type: "profile", githubUser })
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to get GPT response.");
 			}
 
 			const data = await response.json();
@@ -66,7 +74,7 @@
 			}
 
 		} catch (err) {
-			error = err instanceof Error ? err.message : "An unknown error occurred";
+			error = err instanceof Error ? err.message : "An unknown error has occurred.";
 		} finally {
 			loading = false;
 		}
@@ -99,7 +107,7 @@
 
 	<!-- Display Pinned Repositories -->
 	<h4 class="text-lg font-bold mt-4">Pinned Repositories:</h4>
-	{#each $repoSettings as repo, i}
+	{#each githubUser.pinnedRepositories as repo, i}
 		<div class="p-2 border rounded-lg bg-gray-700 mt-2 relative">
 			<h5 class="text-md font-bold">{repo.name}</h5>
 			<p>{repo.description}</p>
@@ -120,7 +128,7 @@
 
 				<!-- Right-aligned Generate Repo README Button -->
 				<button 
-					on:click={() => generateRepoReadme(repo.name, repo.readme, repo.additionalDescription)}
+					on:click={() => gptGenerateRepo(repo)}
 					class="px-3 py-1 text-sm text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none"
 				>
 					Generate Repo README
@@ -129,7 +137,7 @@
 
 			<!-- Additional Description Textarea -->
 			<textarea
-				bind:value={repo.additionalDescription}
+				bind:value={repo.additionalDesc}
 				placeholder="Add extra details..."
 				class="w-full p-2 mt-2 resize-none text-white border rounded focus:ring-blue-500"
 			></textarea>
@@ -146,7 +154,7 @@
 
 	<!-- Generate Profile README Button -->
 	<button
-		on:click={gptGenerate}
+		on:click={gptGenerateProfile}
 		class="w-full mt-4 px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none"
 	>
 		Generate Profile README

@@ -11,4 +11,6 @@ export type PinnedRepository = {
   description: string | null;
   url: string;
   readme: string | null;
+  additionalDesc: string | null;
+  enableReadme: boolean | false;
 };
