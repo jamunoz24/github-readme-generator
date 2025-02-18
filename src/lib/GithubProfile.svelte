@@ -155,7 +155,9 @@
 	>
 		Generate Profile README
 	</button>
+</div>
 
+<div class="w-200">
   {#if loading}
 		<div class="flex flex-col items-center mt-4">
 			<div class="loading-spinner"></div>
@@ -167,8 +169,16 @@
 	{/if}
 
 	{#if gptResponse}
+		<div class="flex items-center justify-between mt-2">
+			<h3 class="text-md font-bold">README:</h3>
+			<button 
+				on:click={downloadMarkdown}
+				class="px-3 py-1 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none"
+			>
+				Download as .md
+			</button>
+		</div>
 		<div class="mt-4 p-2 border rounded-lg bg-gray-700 markdown-body">
-			<h4 class="text-md font-bold">README:</h4>
 			<!-- Render response as Markdown using an HTML element -->
 			<div bind:this={markdownContainer}></div>
 			<!-- Download Markdown Button -->

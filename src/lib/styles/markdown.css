@@ -5,10 +5,23 @@
     color: #e2e8f0; /* Light gray text */
 }
 
-.markdown-body h1, 
-.markdown-body h2, 
+.markdown-body h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-top: 1.5rem;
+    border-bottom: 2px solid white; /* Thick underline */
+    margin-bottom: 1rem;
+}
+.markdown-body h2 {
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin-top: 1.25rem;
+    border-bottom: 2px solid white; /* Thick underline */
+    margin-bottom: 1rem;
+}
 .markdown-body h3 {
-    color: #facc15; /* Yellow headings */
+    font-size: 1.5rem;
+    font-weight: bold;
     margin-top: 1rem;
 }
 

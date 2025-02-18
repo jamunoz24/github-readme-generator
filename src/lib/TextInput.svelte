@@ -38,9 +38,9 @@
 	}
 </script>
 
-<div class="flex flex-col items-center space-y-4 w-120 mb-6">
+<div class="flex flex-col items-center space-y-4  mb-6">
 	<!-- Username Textbox -->
-  <h2 class="text-lg font-bold self-start m-1">Github Username:</h2>
+  <h2 class="text-lg font-bold w-120 m-1">Github Username:</h2>
 	<input
 		bind:value={username}
 		on:keydown={handleKeydown}
