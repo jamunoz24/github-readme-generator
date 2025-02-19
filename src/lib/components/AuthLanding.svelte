@@ -55,7 +55,7 @@
 
       <div class="flex flex-col w-120 text-center items-center space-y-2 text-gray-400"
       in:fade={{ duration: 2800, delay: 2800}}>
-        <p>The GitHub Scrolls is a readme generator. Whether it is for a repository or your GitHub profile, this application uses ChatGPT to generate you an appealing readme file in md format.</p>
+        <p>The GitHub Scrolls is a readme generator. Whether it is for a repository or your GitHub profile, this application uses ChatGPT to generate you an appealing readme file in markdown format.</p>
         <p>This application requires a GitHub authenticated sign-in, as well as an OpenAI API secret key to start generating.</p>
 
         {#if loggedIn}
@@ -76,6 +76,11 @@
             class="mt-2 px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-700">
             Save OpenAI Key
           </button>
+          <div class="text-gray-500 my-5">
+            <p>Your key is stored locally on the browser.</p>
+            <a href="https://platform.openai.com/api-keys" target="_blank"
+            class="underline">Get your API Key here.</a>
+          </div>
         </div>
 
       </div>
