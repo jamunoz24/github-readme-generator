@@ -1,4 +1,4 @@
-import type { GithubUser } from '$lib/types/github.js';
+import type { GithubUser } from '$lib/types/github.ts';
 
 const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_ACCESS_TOKEN;
 
