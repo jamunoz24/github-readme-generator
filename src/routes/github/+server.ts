@@ -2,10 +2,22 @@ import type { GithubUser } from '$lib/types/github.ts';
 
 const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_ACCESS_TOKEN;
 
-export async function GET({ url }) {
+export async function GET({ url, request }) {
     const username = url.searchParams.get("username") || "octocat";
     if (!username) {
         return new Response("Please provide a username", { status: 400 });
+    }
+
+     // Step 1: Check if a user is authenticated (via OAuth)
+    const cookies = request.headers.get("cookie");
+    const userTokenMatch = cookies?.match(/github_token=([^;]+)/);
+    const userAccessToken = userTokenMatch ? userTokenMatch[1] : null;
+
+    // Step 2: Determine which token to use
+    const tokenToUse = userAccessToken || GITHUB_TOKEN;
+
+    if (!tokenToUse) {
+        return new Response("Authentication required", { status: 401 });
     }
 
     const query = {
@@ -41,7 +53,7 @@ export async function GET({ url }) {
     const response = await fetch("https://api.github.com/graphql", {
         method: "POST",
         headers: {
-            "Authorization": `Bearer ${GITHUB_TOKEN}`,
+            "Authorization": `Bearer ${tokenToUse}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify(query)
