@@ -9,7 +9,7 @@
 
 /* 🌙 Dark Theme */
 [data-theme="dark"] {
-  --color-bg: #1a202c;
+  --color-bg: #141B22;
   --color-text: #ffffff;
   --color-primary: #facc15; /* Yellow */
 }
@@ -28,7 +28,11 @@
 }
 
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: "Inter", sans-serif;
+}
+
+h1, h2, h3 {
+  font-family: "Manrope", sans-serif;
 }
 
 .loading-spinner {
