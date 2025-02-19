@@ -5,7 +5,7 @@ export async function GET({ url }) {
   const code = url.searchParams.get("code");
 
   if (!code) {
-    return json({ error: "Missing GitHub code" }, { status: 400 });
+    return json({ error: "Github authentication failed" }, { status: 400 });
   }
 
   // Step 1: Exchange "code" for an access token
