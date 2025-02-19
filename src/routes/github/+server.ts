@@ -66,7 +66,8 @@ export async function GET({ url }) {
         description: node.description,
         url: node.url,
         readme: node.object?.text || null
-      }))
+      })),
+      additionalDesc: null
     }
 
     return new Response(JSON.stringify(user), { status: 200 });
