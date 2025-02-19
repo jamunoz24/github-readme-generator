@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { GithubUser } from "./types/github";
-	import GithubProfile from "./GithubProfile.svelte";
+	import type { GithubUser } from "../types/github";
+	import { GithubProfile } from "$lib";
 
 	let username = "";
 	let error = "";

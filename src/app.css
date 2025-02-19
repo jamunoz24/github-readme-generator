@@ -1,14 +1,6 @@
 @import 'tailwindcss';
 
-/* 🌞 Light Theme */
 :root {
-  --color-bg: #ffffff;
-  --color-text: #1a202c;
-  --color-primary: #3b82f6; /* Blue */
-}
-
-/* 🌙 Dark Theme */
-[data-theme="dark"] {
   --color-bg: #141B22;
   --color-text: #ffffff;
   --color-primary: #facc15; /* Yellow */
