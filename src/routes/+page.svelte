@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { AuthLanding, TextInput } from "$lib";
+  import { AuthLanding } from "$lib";
 	import GithubProfile from "$lib/components/GithubProfile.svelte";
 	import { onMount, onDestroy } from "svelte";
 

@@ -8,7 +8,6 @@
 
   onMount(async () => {
     showTransition = true;
-
     checkAuthStatus();
   });
 
@@ -27,8 +26,6 @@
     window.addEventListener("message", async function handler(event) {
       if (event.origin !== window.location.origin) return;
       if (event.data.github_token) {
-        console.log("GitHub token received:", event.data.github_token);
-
         // Remove event listener after receiving the token
         window.removeEventListener("message", handler);
         
