@@ -28,12 +28,16 @@ export async function GET({ url }) {
     return json({ error: "Failed to retrieve access token" }, { status: 401 });
   }
 
-  // Step 2: Store token in a secure cookie
-  return new Response("", {
-    status: 302,
-    headers: {
+  // Step 2: Return an HTML response to send token to opener and close the popup
+  return new Response(`
+    <script>
+      window.opener.postMessage({ github_token: "${access_token}" }, window.location.origin);
+      window.close();
+    </script>
+  `, {
+    headers: { 
+      "Content-Type": "text/html",
       "Set-Cookie": `github_token=${access_token}; Path=/; HttpOnly; Secure; SameSite=Strict`,
-      Location: "/", // Redirect to the home page after login
-    },
+     }
   });
 }

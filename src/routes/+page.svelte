@@ -20,6 +20,15 @@
     checkAuthStatus();
     // Listen for OpenAI key updates from AuthLanding.svelte
     window.addEventListener("openaiKeyUpdated", checkAuthStatus);
+  
+    // Listen for messages from the popup window
+    window.addEventListener("message", async (event) => {
+      if (event.origin !== window.location.origin) return; // Security check
+      if (event.data.github_token) {
+        console.log("GitHub token received:", event.data.github_token);
+        checkAuthStatus(); // Update UI when authenticated
+      }
+    });
   });
 
   // onDestroy(() => {

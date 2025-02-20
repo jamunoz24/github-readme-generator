@@ -9,14 +9,40 @@
   onMount(async () => {
     showTransition = true;
 
-    // Check if user is authenticated
-    const response = await fetch("/auth/user");
-    const data = await response.json();
-    loggedIn = data.loggedIn;
+    checkAuthStatus();
   });
 
   function signInWithGitHub() {
-    window.location.href = "/auth";  // Redirects to GitHub OAuth
+    // window.location.href = "/auth";  // Redirects to GitHub OAuth
+    const authWindow = window.open(`/auth`, "Github Oauth", "width=500,height=600");
+
+    // Listen for the authentication message from the popup
+    window.addEventListener("message", async function handler(event) {
+      if (event.origin !== window.location.origin) return;
+      if (event.data.github_token) {
+        console.log("GitHub token received:", event.data.github_token);
+
+        // Remove event listener after receiving the token
+        window.removeEventListener("message", handler);
+        
+        // Refresh authentication status
+        await checkAuthStatus();
+      }
+    });
+
+    // Poll the popup window to check when it closes
+    const popupCheckInterval = setInterval(() => {
+      if (authWindow?.closed) {
+        clearInterval(popupCheckInterval);
+        checkAuthStatus(); // Update the UI when the user is logged in
+      }
+    }, 500);
+  }
+
+  async function checkAuthStatus() {
+    const response = await fetch("/auth/user");
+    const data = await response.json();
+    loggedIn = data.loggedIn;
   }
 
   function saveOpenaiKey() {
