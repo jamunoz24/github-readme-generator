@@ -31,9 +31,11 @@
     });
   });
 
-  // onDestroy(() => {
-  //   window.removeEventListener("openaiKeyUpdated", checkAuthStatus);
-  // });
+  onDestroy(() => {
+    if (typeof window !== "undefined") {
+      window.removeEventListener("openaiKeyUpdated", checkAuthStatus);
+    }
+  });
   
   function logout() {
     if (typeof window !== "undefined") {
