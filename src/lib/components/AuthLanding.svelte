@@ -13,8 +13,15 @@
   });
 
   function signInWithGitHub() {
-    // window.location.href = "/auth";  // Redirects to GitHub OAuth
-    const authWindow = window.open(`/auth`, "Github Oauth", "width=500,height=600");
+    const width = 600;
+    const height = 700;
+    const left = (window.innerWidth - width) / 2;
+    const top = (window.innerHeight - height) / 2;
+    const authPopup = window.open(
+      "/auth",
+      "GitHub OAuth",
+      `width=${width},height=${height},top=${top},left=${left}`
+    );
 
     // Listen for the authentication message from the popup
     window.addEventListener("message", async function handler(event) {
@@ -32,7 +39,7 @@
 
     // Poll the popup window to check when it closes
     const popupCheckInterval = setInterval(() => {
-      if (authWindow?.closed) {
+      if (authPopup?.closed) {
         clearInterval(popupCheckInterval);
         checkAuthStatus(); // Update the UI when the user is logged in
       }
@@ -50,9 +57,7 @@
       alert("Please enter a valid OpenAI API key.");
       return;
     }
-
     localStorage.setItem("openaiKey", openaiKey);
-    alert("OpenAI API Key saved!");
 
     // Notify +page.svelte that the key has been updated
     window.dispatchEvent(new Event("openaiKeyUpdated"));
