@@ -44,7 +44,7 @@ export async function GET({ url }) {
   `, {
     headers: { 
       "Content-Type": "text/html",
-      "Set-Cookie": `github_token=${access_token}; Path=/; HttpOnly; Secure; SameSite=Strict`,
+      "Set-Cookie": `github_token=${access_token}; Path=/; HttpOnly; Secure; SameSite=Lax`,
     }
   });
 }
