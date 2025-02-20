@@ -25,7 +25,6 @@
     window.addEventListener("message", async (event) => {
       if (event.origin !== window.location.origin) return; // Security check
       if (event.data.github_token) {
-        console.log("GitHub token received:", event.data.github_token);
         checkAuthStatus(); // Update UI when authenticated
       }
     });
