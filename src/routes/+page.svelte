@@ -1,13 +1,14 @@
-<script>
+<script lang="ts">
   import { AuthLanding, TextInput } from "$lib";
+	import GithubProfile from "$lib/components/GithubProfile.svelte";
 	import { onMount, onDestroy } from "svelte";
 
-  let gitHubOauth = false;
-  let openaiKeyProvided = false;
+  let gitHubOauth: boolean = false;
+  let openaiKeyProvided: boolean = false;
 
   async function checkAuthStatus() {
     // Check if user is authenticated with GitHub
-    const response = await fetch("/auth/check");
+    const response = await fetch("/auth/user");
     const data = await response.json();
     gitHubOauth = data.loggedIn;
 
@@ -17,7 +18,6 @@
 
   onMount(() => {
     checkAuthStatus();
-
     // Listen for OpenAI key updates from AuthLanding.svelte
     window.addEventListener("openaiKeyUpdated", checkAuthStatus);
   });
@@ -47,6 +47,6 @@
         Logout
       </button>
     </div>
-    <TextInput />
+    <GithubProfile />
   {/if}
 </div>

@@ -2,13 +2,21 @@
 	import '$lib/styles/markdown.css';
 	import type { GithubUser, PinnedRepository } from "$lib/types/github";
 	import { marked } from "marked";
-	import { tick } from 'svelte';
+	import { onMount, tick } from 'svelte';
 
-	export let githubUser: GithubUser;
+	let githubUser: GithubUser;
 	let loading = false;
 	let error = "";
 	let gptResponse = "";
 	let markdownContainer: HTMLElement | null = null;
+
+	onMount(async () => {
+		// Get GitHub user info
+		const response = await fetch("/github");
+		githubUser = await response.json();
+		console.log(githubUser);
+
+	});
 
 	async function gptGenerateRepo(repo: PinnedRepository) {
 		loading = true;
@@ -93,6 +101,7 @@
 
 </script>
 
+{#if githubUser}
 <div class="w-120 p-4 border rounded-lg bg-gray-800 text-white">
 	<img src="{githubUser.avatarUrl}" alt="Avatar" class="w-16 h-16 rounded-full mb-2">
 	<h3 class="text-lg font-bold">{githubUser.name}</h3>
@@ -191,3 +200,4 @@
 		</div>
 	{/if}
 </div>
+{/if}

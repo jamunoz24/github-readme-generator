@@ -2,15 +2,15 @@
 	import { onMount } from "svelte";
   import { fly, fade } from "svelte/transition";
 
-  let showTransition = false;
-  let loggedIn = false;
-  let openaiKey = "";
+  let showTransition: boolean = false;
+  let loggedIn: boolean = false;
+  let openaiKey: string = "";
 
   onMount(async () => {
     showTransition = true;
 
     // Check if user is authenticated
-    const response = await fetch("/auth/check");
+    const response = await fetch("/auth/user");
     const data = await response.json();
     loggedIn = data.loggedIn;
   });

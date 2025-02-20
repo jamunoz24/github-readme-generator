@@ -68,7 +68,7 @@
 
 	<!-- Display GitHub Data in GithubProfile Component -->
 	{#if githubUser}
-		<GithubProfile {githubUser} />
+		<!-- <GithubProfile {githubUser} /> -->
 	{/if}
 
 </div>
