@@ -9,11 +9,13 @@
 	let error: string = "";
 	let gptResponse: string = "";
 	let markdownContainer: HTMLElement | null = null;
+	let openaiKey: string | null = null;
 
 	onMount(async () => {
 		// Get GitHub user info
 		const response = await fetch("/github");
 		githubUser = await response.json();
+		openaiKey = localStorage.getItem("openaiKey");
 	});
 
 	async function gptGenerateRepo(repo: PinnedRepository) {
@@ -24,12 +26,15 @@
 		try {
 			const response = await fetch("/openai", {
 				method: "POST",
-				headers: { "Content-Type": "application/json" },
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": `${openaiKey}`
+				 },
 				body: JSON.stringify({ type: "repo", repo})
 			});
 
 			if (!response.ok) {
-				throw new Error("Failed to get GPT reponse.")
+				throw new Error("Failed to get GPT reponse. Try resubmitting a valid OpenAI Key.")
 			}
 		
 			const data = await response.json();
@@ -56,12 +61,15 @@
 		try {
 			const response = await fetch("/openai", {
 				method: "POST",
-				headers: { "Content-Type": "application/json" },
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": `${openaiKey}`
+				 },
 				body: JSON.stringify({ type: "profile", githubUser })
 			});
 
 			if (!response.ok) {
-				throw new Error("Failed to get GPT response.");
+				throw new Error("Failed to get GPT response. Try resubmitting a valid OpenAI Key.");
 			}
 
 			const data = await response.json();
@@ -103,7 +111,7 @@
 </script>
 
 <!-- Header -->
-<div class="border-b border-gray-500 mb-2 flex items-center px-4">
+<div class="border-b-2 h-20 border-gray-500 mb-2 flex items-center px-4">
 	<div class="w-16 h-16">
 		<img src="/the-github-scrolls.png" alt="GitHub Scrolls">
 	</div>
@@ -136,7 +144,7 @@
 		</div>
 	</div>
 
-	<h4 class="mx-6 text-xl font-bold mt-6">Generate for Pinned Repositories:</h4>
+	<h4 class="mx-8 text-xl font-bold mt-6">Generate for Pinned Repositories:</h4>
 	<div class="flex flex-wrap justify-center space-x-6 mx-6 mb-6">
 		{#each githubUser.pinnedRepositories as repo, i}
 			<div class="w-85 h-80 p-2 border rounded-lg bg-gray-700 mt-2 flex flex-col justify-between">
@@ -177,23 +185,23 @@
 	</div>
 
 	<!-- Markdown output -->
-	<div class="flex flex-col justify-center mx-6">
+	<div class="flex flex-col items-center justify-center mx-6">
 		{#if loading}
-			<div class="flex flex-col items-center mt-4">
+			<div class="flex flex-col items-center mt-4 mb-8">
 				<div class="loading-spinner"></div>
 			</div>
 		{/if}
 
 		{#if error}
-			<p class="text-red-500">{error}</p>
+			<p class="text-red-500 mb-8">{error}</p>
 		{/if}
 
 		{#if gptResponse}
-		<div class="flex justify-center">
-			<div class="flex flex-col items-center w-[80%] max-w-2xl">
+		<div class="flex justify-center mb-8">
+			<div class="flex flex-col items-center w-[80%] max-w-4xl">
 				<button 
 					on:click={downloadMarkdown}
-					class="px-3 py-1 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none"
+					class="w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none"
 				>
 					Download as .md
 				</button>

@@ -1,8 +1,8 @@
 import type { RequestHandler } from './$types';
-import type { GithubUser, PinnedRepository } from '$lib/types/github.js';
-const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
+import type { GithubUser, PinnedRepository } from '$lib/types/github.ts';
 
 export const POST: RequestHandler = async ({ request }) => {
+    const OPENAI_API_KEY = request.headers.get("Authorization");
     try {
         const { type, githubUser, repo }:
             {type: string, githubUser: GithubUser, repo: PinnedRepository } = await request.json();
